@@ -1,5 +1,5 @@
 # 标识符和关键字
-## 标识符
+## 标识符
 在编程语言中标识符就是程序员定义的具有特殊意义的词，比如变量名、常量名、函数名等等。 Go语言中标识符由`字母数字`和`_`(下划线）组成，并且只能以字母和`_`开头。 举几个例子：abc, _, _123, a123。
 
 ## 关键字
@@ -237,3 +237,140 @@ func main(){
 	fmt.Printf("%X \n", c)  // FF
 }
 ```
+# 浮点数
+Go语言支持两种浮点型数：`float32`和`float64`。这两种浮点型数据格式遵循IEEE 754标准： float32 的浮点数的最大范围约为 `3.4e38`，可以使用常量定义：`math.MaxFloat32`。 float64 的浮点数的最大范围约为 `1.8e308`，可以使用一个常量定义：`math.MaxFloat64`。  
+
+一个float32类型的浮点数可以提供大约6个十进制数的精度，float64类型的浮点数提供大约15个，所以优先使用float64类型。 
+
+小数点前面或后面的数可以被省略。很大或很小的数最好用科学计数法书写，通过e或E来指定指数部分。
+```
+const Avogadro = 6.02214129e23 //阿伏伽德罗常数
+const Planck = 6.62606957e-34 //普朗克常数
+```
+使用`%e`(带指数)或`%f`的形式打印浮点数。
+```
+for x := 0; x < 8; x++{
+	fmt.printf("x = %d e^x = %8.3f\n", x, math.Exp(float64(x)))
+}
+```
+上面代码打印e的幂，打印精度是小数点后三个小数精度和8个字符宽度。  
+# 复数
+GO语言提供了两种精度的复数类型：`complex64`和`complex128`.   
+内置的complex函数用于构建复数，内建的`real`和`imag`函数分别返回函数的`实部`和`虚部`。  
+```
+func main()  {
+	var x complex128 = complex(1,2)
+	var y complex128 = complex(3,4)
+	fmt.Println(x*y)
+	fmt.Println(real(x*y))
+	fmt.Println(imag(x*y))
+}
+```
+复数也可以用==和!=进行相等比较，只有实部和虚部都相等时，复数才相等。  
+
+复数有实部和虚部，complex64的实部和虚部为32位，complex128的实部和虚部为64位。  
+# 布尔型
+Go语言中以`bool`类型进行声明布尔型数据，布尔型数据只有`true`（真）和`false`（假）两个值。  
+
+`注意：`  布尔类型变量的默认值为false。  
+
+布尔值并不会隐式转化为数字值0或1，反之亦然。可包装成一个函数比较方便。
+```
+//botoi returns 1 if b is true and 0 if b is false  
+fuc btoi (b bool) int{
+	if b{
+		return 1
+	}
+	return 0
+}  
+```
+```
+fun itob(i int) bool{
+	return i !=0
+}
+```
+# 字符串
+字符串可以包含任意的数据，使用字符串就像使用其他原生数据类型（int、bool、float32、float64 等）一样。 Go 语言里的字符串的内部实现使用`UTF-8`编码。 字符串的值为`双引号`(" ")中的内容.  
+
+第i个字节并不一定是字符串的第i个字符。  
+
+子字符串操作s[i:j]基于原始的s字符串的`第i个字节开始到第j-1个字节`生成的一个新字符串。
+## 字符串转译符
+|转义符|	含义|  
+|-----|--------|
+|\a|  响铃|  
+|\b|  退格|  
+|\f|  换页 | 
+|\r|	回车符（返回行首）|  
+|\n|	换行符（直接跳到下一行的同列位置）|  
+|\t|	制表符|  
+|\v|  垂直制表符|  
+|\'|	单引号|  
+|\"|	双引号|  
+|\\|	反斜杠|  
+## 多行字符串
+Go语言中要定义一个多行字符串时，就必须使用`反引号`字符：
+```
+s1 := `第一行
+第二行
+第三行
+`
+fmt.Println(s1)
+```
+反引号间换行将被作为字符串中的换行，但是所有的转义字符均无效，文本将会原样输出。
+## 字符串的常用操作
+|方法|	介绍|
+|---|-
+|len(str)|	求长度|
+|+或fmt.Sprintf|	拼接字符串|
+|strings.Split|	分割|
+|strings.contains|	判断是否包含|
+|strings.HasPrefix,strings.HasSuffix|	前缀/后缀判断|
+|strings.Index(),strings.LastIndex()|	子串出现的位置|
+## 修改字符串
+要修改字符串，需要先将其转换成`[]rune`或`[]byte`，完成后再转换为`string`。无论哪种转换，都会重新分配内存，并复制字节数组。
+```
+func changeString() {
+	s1 := "big"
+	// 强制类型转换
+	byteS1 := []byte(s1)
+	byteS1[0] = 'p'
+	fmt.Println(string(byteS1))
+
+	s2 := "白萝卜"
+	runeS2 := []rune(s2)
+	runeS2[0] = '红'
+	fmt.Println(string(runeS2))
+}
+```
+## 类型转换
+Go语言中只有强制类型转换，没有隐式类型转换。该语法只能在两个类型之间支持相互转换的时候使用。
+
+强制类型转换的基本语法如下：
+```
+T(表达式)
+```
+其中，T表示要转换的类型。表达式包括变量、复杂算子和函数返回值等.  
+
+比如计算直角三角形的斜边长时使用math包的Sqrt()函数，该函数接收的是float64类型的参数，而变量a和b都是int类型的，这个时候就需要将a和b强制类型转换为float64类型。
+```
+func sqrtDemo() {
+	var a, b = 3, 4
+	var c int
+	// math.Sqrt()接收的参数是float64类型，需要强制转换
+	c = int(math.Sqrt(float64(a*a + b*b)))
+	fmt.Println(c)
+}
+```
+## 字符串和数字的转换
+### 整数转化为字符串
+一种使用fmt.sprintf返回一个格式化的字符串，另一种方法是用strconv.Itoa  
+```
+func  main() {
+	x := 123
+	y := fmt.Sprintf("%d",x)
+	fmt.Println(y, strconv.Itoa(x)) // 123 123
+}
+```
+
+
