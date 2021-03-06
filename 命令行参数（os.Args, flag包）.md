@@ -69,7 +69,7 @@ fmt.Println("-s:", *s)
 
 ## 例子
 ```
-package main
+ppackage main
 
 import (
 	"flag"
@@ -82,7 +82,8 @@ func main() {
 	var host = flag.String("h", "127.0.0.1", "主机名,默认 127.0.0.1")
 	var port = flag.Int( "P", 3306, "端口号,默认为空")
 	flag.Parse()
-	fmt.Printf("username=%v  password=%v  host=%v  port=%d ", *username, *password, *host, *port)
+	fmt.Printf("username=%v  password=%v  host=%v  port=%d \n", *username, *password, *host, *port)
+
 }
 
 go run test.go -u root -p 1234
